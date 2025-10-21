@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Half Circles with Measurements</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f0f0f0;
+      }
+      svg {
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .measurement {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Set up SVG dimensions
+      const width = 600;
+      const height = 600;
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // Circle parameters
+      const mainRadius = 98; // Radius of the main circle
+      const halfCircleRadius = 2; // Radius of each half circle
+      const numSegments = 44; // Number of segments around the circle
+
+      // Calculate inner and outer circle radii
+      const outerRadius = mainRadius + halfCircleRadius;
+      const innerRadius = mainRadius - halfCircleRadius;
+
+      // Create SVG
+      const svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      // Draw outer circle
+      // svg
+      //   .append("circle")
+      //   .attr("cx", centerX)
+      //   .attr("cy", centerY)
+      //   .attr("r", outerRadius)
+      //   .style("fill", "none")
+      //   .style("stroke", "#aaa")
+      //   .style("stroke-width", 1);
+
+      // Draw inner circle
+      // svg
+      //   .append("circle")
+      //   .attr("cx", centerX)
+      //   .attr("cy", centerY)
+      //   .attr("r", innerRadius)
+      //   .style("fill", "none")
+      //   .style("stroke", "#aaa")
+      //   .style("stroke-width", 1);
+
+      // Draw main circle (dashed)
+      // svg
+      //   .append("circle")
+      //   .attr("cx", centerX)
+      //   .attr("cy", centerY)
+      //   .attr("r", mainRadius)
+      //   .style("fill", "none")
+      //   .style("stroke", "#ddd")
+      //   .style("stroke-dasharray", "5,5");
+
+      // Function to get point on main circle at given angle
+      function getPointOnMainCircle(angle) {
+        return [
+          centerX + mainRadius * Math.cos(angle),
+          centerY + mainRadius * Math.sin(angle),
+        ];
+      }
+
+      // Create the continuous path
+      let pathData = "";
+      const angleStep = (2 * Math.PI) / numSegments;
+
+      for (let i = 0; i < numSegments; i++) {
+        const startAngle = i * angleStep;
+        const endAngle = (i + 1) * angleStep;
+
+        const [startX, startY] = getPointOnMainCircle(startAngle);
+        const [endX, endY] = getPointOnMainCircle(endAngle);
+
+        if (i % 2 === 0) {
+          pathData +=
+            (i === 0 ? `M ${startX} ${startY}` : "") +
+            ` A ${halfCircleRadius} ${halfCircleRadius} 0 0 1 ${endX} ${endY}`;
+        } else {
+          pathData += ` A ${halfCircleRadius} ${halfCircleRadius} 0 0 0 ${endX} ${endY}`;
+        }
+      }
+
+      pathData += " Z";
+
+      // Draw the continuous path
+      svg
+        .append("path")
+        .attr("d", pathData)
+        .style("fill", "none")
+        .style("stroke", "steelblue")
+        .style("stroke-width", 2);
+
+      // Add measurements
+      // Outer radius
+      // svg
+      //   .append("line")
+      //   .attr("x1", centerX)
+      //   .attr("y1", centerY)
+      //   .attr("x2", centerX + outerRadius)
+      //   .attr("y2", centerY)
+      //   .style("stroke", "#666")
+      //   .style("stroke-width", 1)
+      //   .style("stroke-dasharray", "4,4");
+
+      // svg
+      //   .append("text")
+      //   .attr("class", "measurement")
+      //   .attr("x", centerX + outerRadius / 2)
+      //   .attr("y", centerY - 10)
+      //   .text(`Outer R: ${outerRadius}px`)
+      //   .style("text-anchor", "middle");
+
+      // // Inner radius
+      // svg
+      //   .append("line")
+      //   .attr("x1", centerX)
+      //   .attr("y1", centerY)
+      //   .attr("x2", centerX - innerRadius)
+      //   .attr("y2", centerY)
+      //   .style("stroke", "#666")
+      //   .style("stroke-width", 1)
+      //   .style("stroke-dasharray", "4,4");
+
+      // svg
+      //   .append("text")
+      //   .attr("class", "measurement")
+      //   .attr("x", centerX - innerRadius / 2)
+      //   .attr("y", centerY - 10)
+      //   .text(`Inner R: ${innerRadius}px`)
+      //   .style("text-anchor", "middle");
+
+      // // Half circle radius
+      // svg
+      //   .append("text")
+      //   .attr("class", "measurement")
+      //   .attr("x", centerX + mainRadius + 5)
+      //   .attr("y", centerY + halfCircleRadius / 2)
+      //   .text(`Half circle R: ${halfCircleRadius}px`)
+      //   .style("text-anchor", "start");
+    </script>
+  </body>
+</html>

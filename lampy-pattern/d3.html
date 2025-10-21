@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3 Star Polygon</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f0f0f0;
+      }
+      svg {
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Set up SVG dimensions
+      const centerX = 0;
+      const centerY = 0;
+
+      // Set up radii for inner and outer points
+      const outerRadius = 100 / 2;
+      const innerRadius = 84 / 2;
+
+      const width = outerRadius * 2;
+      const height = outerRadius * 2;
+
+      // Calculate points
+      const numPoints = 200;
+      const angleStep = (2 * Math.PI) / (numPoints / 2); // Divide by 2 since we're creating points in pairs
+
+      // Generate array of points
+      const points = [];
+      for (let i = 0; i < numPoints; i++) {
+        const angle = (i * angleStep) / 2; // Divide by 2 to spread points evenly
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        points.push([x, y]);
+      }
+
+      // Create SVG
+      const svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        // viewbox
+        .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`);
+
+      // Create polygon using points
+      svg
+        .append("polygon")
+        .attr("points", points.map((p) => p.join(",")).join(" "))
+        .style("fill", "none")
+        .style("stroke", "blue")
+        .style("stroke-width", 1);
+
+      // Optional: Add animation
+      // svg
+      //   .select("polygon")
+      //   .transition()
+      //   .duration(10000)
+      //   .ease(d3.easeLinear)
+      //   .attrTween("transform", function () {
+      //     return function (t) {
+      //       return `rotate(${t * 360}, ${centerX}, ${centerY})`;
+      //     };
+      //   })
+      //   .on("end", function () {
+      //     d3.select(this).attr("transform", null);
+      //   })
+      //   .repeat();
+    </script>
+  </body>
+</html>
